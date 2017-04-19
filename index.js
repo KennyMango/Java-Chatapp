@@ -10,6 +10,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 
 var pF = path.resolve(__dirname, "public");
+var css = path.resolve(__dirname, "css");
 var app = express();
 
 //create a new server for socket, but combine it with express functions
@@ -27,6 +28,8 @@ var dbURL = process.env.DATABASE_URL || "postgres://enterprisedb:kenster123@loca
 
 
 app.use("/scripts", express.static("build"));
+app.use("/styles", express.static(css));
+
 app.use(bodyParser.urlencoded({
     extended: true
 }));
