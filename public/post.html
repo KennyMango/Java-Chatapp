@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <<!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+</head>
+<style>
+    body{
+        background-color: ghostwhite;
+    }
+
+    #banner{
+        background-image: url("http://www.innersphere.de/wp-content/uploads/overwatch-shibi-banner-logo-klein.png");
+        height: 300px;
+    }
+
+    .blogShort{
+        border-bottom:1px solid #ddd;
+        float: right;
+    }
+    .add{
+        background: #333; padding: 10%; height: 300px;
+    }
+
+    .nav-sidebar {
+        width: 100%;
+        padding: 8px 0;
+    }
+    .nav-sidebar a {
+        color: #333;
+        transition: all 0.08s linear;
+    }
+    .nav-sidebar .active a {
+        cursor: default;
+        background-color: #34ca78;
+        color: #fff;
+    }
+    .nav-sidebar .active a:hover {
+        background-color: #37D980;
+    }
+    .nav-sidebar .text-overflow a,
+    .nav-sidebar .text-overflow .media-body {
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .btn-blog {
+        color: #ffffff;
+        background-color: #37d980;
+        border-color: #37d980;
+        border-radius:0;
+        margin-bottom:10px
+    }
+    .btn-blog:hover,
+    .btn-blog:focus,
+    .btn-blog:active{
+        color: white;
+        background-color:#34ca78;
+        border-color: #34ca78;
+    }
+
+</style>
+<body>
+
+<div class="jumbotron text-center" id="banner"></div>
+
+
+<div class="container">
+    <div id="blog" class="row">
+
+        <div class="col-sm-2 paddingTop20">
+            <nav class="nav-sidebar">
+                <ul class="nav">
+                    <input class="form-control" placeholder="Title" id = "title"/>
+                    <input class="form-control" placeholder="Description" id = "description"/>
+                    <button class = "btn btn-blog" id = "post">Post</button>
+                    <button class = "btn btn-blog" id ="logout">logout</button>
+                </ul>
+            </nav>
+        </div>
+
+
+        <div class="col-md-12 gap10"></div>
+    </div>
+</div>
+
+<script src='/scripts/postbundle.js'></script>
+
+</body>
+</html>
