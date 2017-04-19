@@ -31,7 +31,7 @@ function initSockets(roomId, username){
 
 
         var obj = {
-            msg: document.getElementById("msg").value,
+            msg: document.getElementById("msgtxt").value,
             username: username
         };
 
@@ -45,35 +45,34 @@ function initSockets(roomId, username){
 
 
         var display = document.getElementById("display");
+        var adiv = document.createElement("div");
+        var msg = document.createElement("p");
         var container = document.createElement("div");
         var row = document.createElement("div");
-        var adiv = document.createElement("div");
-        var img = document.createElement("img");
-        var msg = document.createElement("p");
 
 
+        container.className = "container";
         row.className = "row";
         container.appendChild(row);
 
+        adiv.id = "user";
+        msg.id = "msg";
         adiv.innerHTML = obj.username;
-
-
         msg.style.color = "black";
         msg.innerHTML = ": " + obj.msg;
-
-
-
         adiv.style.padding = "5px";
         adiv.style.margin = "5px";
-        adiv.appendChild(msg);
-
+        msg.style.padding = "5px";
+        msg.style.margin = "5px";
 
 
 
 
         row.appendChild(adiv);
+        row.appendChild(msg);
 
         display.appendChild(container);
+
 
 
     });
