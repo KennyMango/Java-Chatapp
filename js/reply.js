@@ -1,4 +1,7 @@
 /**
+ * Created by Kenneth on 2017-04-19.
+ */
+/**
  * Created by Kenneth on 2017-04-17.
  */
 $(document).ready(function(){
@@ -23,18 +26,17 @@ $(document).ready(function(){
 
     document.getElementById("post").addEventListener("click", function(){
 
-        var title = document.getElementById("title");
-        var description = document.getElementById("description");
+
+        var description = document.getElementById("reply");
 
 
 
         $.ajax({
-            url:"/post",
+            url:"/postreply",
             type:"post",
             data:{
-                room: title.value,
                 npost: description.value,
-                type: "create"
+                type: "pcreate"
             },
             success:function(resp){
 
@@ -42,16 +44,13 @@ $(document).ready(function(){
                 if(resp.status == "success"){
                     var row = document.getElementById("blog");
                     var ndiv = document.createElement("div");
-                    var ntitle = document.createElement("h1");
                     var timestamp = document.createElement("em");
                     var ndescription = document.createElement("p");
-                    var reply = document.createElement("a");
-                    var chat = document.createElement("a");
                     var votecontainer = document.createElement("div");
                     var upvote = document.createElement("a");
                     var votes = document.createElement("span");
                     var downvote = document.createElement("a");
-                    var remove = document.createElement("a");
+
 
 
 
@@ -66,55 +65,19 @@ $(document).ready(function(){
 
                     ndiv.className = "col-md-10 blogShort";
                     timestamp.innerHTML = "Created by "+resp.username+" on "+resp.time["time_created"];
-                    ntitle.innerHTML = resp.title;
                     ndescription.innerHTML = resp.description;
-                    chat.className =  "btn btn-blog pull-right marginBottom10";
-                    chat.innerHTML = "CHAT";
-                    remove.className=  "btn btn-blog pull-right marginBottom10";
-                    remove.innerHTML = "REMOVE";
-                    reply.className = "btn btn-blog pull-right marginBottom10";
-                    reply.innerHTML = "REPLY";
                     ndiv.style.borderStyle = "solid";
                     ndiv.style.borderWidth = "medium";
                     ndiv.style.borderColor = "black";
                     ndiv.style.margin = "5px";
                     ndiv.id = ""+resp.time["id"];
-                    ndiv.appendChild(ntitle);
                     ndiv.appendChild(timestamp);
                     ndiv.appendChild(ndescription);
                     ndiv.appendChild(votecontainer);
-                    ndiv.appendChild(chat);
-                    ndiv.appendChild(reply);
-                    ndiv.appendChild(remove);
 
                     row.appendChild(ndiv);
 
-                    chat.myindex = resp.index;
-                    chat.addEventListener("click", function(){
-                       location.href="/room/"+this.myindex;
-                    });
 
-                    reply.myindex = resp.index;
-                    reply.addEventListener("click", function () {
-
-                        location.href="/reply/"+this.myindex;
-
-                    });
-
-                    remove.addEventListener("click", function(){
-                        $.ajax({
-                            url:"/removepost",
-                            type:"post",
-                            data:{
-                                id: parseInt(ndiv.id)
-                            },
-                            success:function(resp){
-                                if(resp == "success"){
-                                    location.reload();
-                                }
-                            }
-                        })
-                    });
 
                     upvote.addEventListener("click", function () {
                         var newVote = votes.innerHTML;
@@ -126,8 +89,7 @@ $(document).ready(function(){
                             url:"/updatevotes",
                             type:"post",
                             data:{
-                                counter: value,
-                                title: title.value
+                                counter: value
                             },
                             success:function(resp){
                                 console.log(resp);
@@ -146,17 +108,6 @@ $(document).ready(function(){
                     });
 
 
-                // <div id="topic" class="upvote">
-                //
-                //         <a class="upvote"></a>
-                //
-                //         <span class="count">0</span>
-                //
-                //         <a class="downvote"></a>
-                //
-                //
-                //
-                //  </div>
 
 
 
@@ -167,10 +118,10 @@ $(document).ready(function(){
     });
 
     $.ajax({
-        url:"/post",
+        url:"/postreply",
         type:"post",
         data:{
-            type: "read"
+            type: "pread"
         },
         success:function(resp){
             console.log(resp);
@@ -183,16 +134,12 @@ $(document).ready(function(){
                 if (resp.status == "success") {
                     var row = document.getElementById("blog");
                     var ndiv = document.createElement("div");
-                    var ntitle = document.createElement("h1");
                     var timestamp = document.createElement("em");
                     var ndescription = document.createElement("p");
-                    var reply = document.createElement("a");
-                    var chat = document.createElement("a");
                     var votecontainer = document.createElement("div");
                     var upvote = document.createElement("a");
                     var votes = document.createElement("span");
                     var downvote = document.createElement("a");
-                    var remove = document.createElement("a");
 
 
                     upvote.className = "glyphicon glyphicon-chevron-up upvote";
@@ -206,55 +153,18 @@ $(document).ready(function(){
 
 
                     ndiv.className = "col-md-10 blogShort";
-                    ntitle.innerHTML = resp.user[i].title;
-                    ndescription.innerHTML = resp.user[i].description;
-                    timestamp.innerHTML = "Created by "+resp.user[i].username+" on "+resp.user[i].time_created;
-                    chat.className =  "btn btn-blog pull-right marginBottom10";
-                    chat.innerHTML = "CHAT";
-                    reply.className = "btn btn-blog pull-right marginBottom10";
-                    reply.innerHTML = "REPLY";
-                    remove.className=  "btn btn-blog pull-right marginBottom10";
-                    remove.innerHTML = "REMOVE";
+                    ndescription.innerHTML = resp.user[i].reply;
+                    timestamp.innerHTML = "Created by "+resp.name+" on "+resp.user[i].time_created;
                     ndiv.style.borderStyle = "solid";
                     ndiv.style.borderWidth = "medium";
                     ndiv.style.borderColor = "black";
                     ndiv.style.margin = "5px";
                     ndiv.id = ""+resp.user[i].id;
-                    ndiv.appendChild(ntitle);
                     ndiv.appendChild(timestamp);
                     ndiv.appendChild(ndescription);
                     ndiv.appendChild(votecontainer);
-                    ndiv.appendChild(chat);
-                    ndiv.appendChild(reply);
-                    ndiv.appendChild(remove);
                     row.appendChild(ndiv);
 
-                    chat.myindex = i;
-                    chat.addEventListener("click", function(){
-                        location.href="/room/"+this.myindex;
-                    });
-
-                    reply.myindex = i;
-                    reply.addEventListener("click", function () {
-
-                        location.href="/reply/"+this.myindex;
-
-                    });
-
-                    remove.addEventListener("click", function(){
-                        $.ajax({
-                            url:"/removepost",
-                            type:"post",
-                            data:{
-                                id: parseInt(ndiv.id)
-                            },
-                            success:function(resp){
-                                if(resp == "success"){
-                                    location.reload();
-                                }
-                            }
-                        })
-                    });
 
                     upvote.addEventListener("click", function () {
                         var value = parseInt(document.getElementsByClassName("counter").innerHTML) + 1;
@@ -264,8 +174,7 @@ $(document).ready(function(){
                             url:"/updatevotes",
                             type:"post",
                             data:{
-                                counter: value,
-                                title: title.value
+                                counter: value
                             },
                             success:function(resp){
                                 console.log(resp);

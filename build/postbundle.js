@@ -10427,6 +10427,13 @@ $(document).ready(function(){
                        location.href="/room/"+this.myindex;
                     });
 
+                    reply.myindex = resp.index;
+                    reply.addEventListener("click", function () {
+
+                        location.href="/reply/"+this.myindex;
+
+                    });
+
                     remove.addEventListener("click", function(){
                         $.ajax({
                             url:"/removepost",
@@ -10558,6 +10565,13 @@ $(document).ready(function(){
                     chat.myindex = i;
                     chat.addEventListener("click", function(){
                         location.href="/room/"+this.myindex;
+                    });
+
+                    reply.myindex = i;
+                    reply.addEventListener("click", function () {
+
+                        location.href="/reply/"+this.myindex;
+
                     });
 
                     remove.addEventListener("click", function(){

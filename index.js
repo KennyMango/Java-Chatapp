@@ -54,6 +54,14 @@ app.get("/", function(req, resp){
 });
 
 
+app.get("/reply/:replyindex", function(req, resp){
+    var index = req.params.replyindex;
+
+    req.session.replyindex = index;
+
+    resp.sendFile(pF+"/reply.html");
+
+});
 
 app.get("/board", function(req, resp){
 
@@ -139,19 +147,20 @@ app.post("/post", function(req, resp){
             client.query("insert into posts (title, description, user_id) values ($1, $2, (select id from user WHERE username = $3));", [req.body.room, req.body.npost, req.session.user['username']]);
 
 
-            var query = client.query("select id, to_char(time_created, 'mm/dd/yyyy HH12:MI:SS') as time_created from posts where user_id = $1 and title = $2", [req.session.user['id'], req.body.room]);
+            var query = client.query("select title, id, to_char(time_created, 'mm/dd/yyyy HH12:MI:SS') as time_created from posts where user_id = $1 and title = $2", [req.session.user['id'], req.body.room]);
 
 
             query.on('row', function(row){
                 time = row;
 
-
+                req.session.posts = row;
             });
 
 
 
             query.on('end',function () {
                 done();
+                console.log(req.session.posts);
                 resp.send({
                     status:"success",
                     title:req.body.room,
@@ -205,6 +214,105 @@ app.post("/post", function(req, resp){
     }
 
 });
+
+var replies = [];
+
+
+app.post("/postreply", function(req, resp){
+
+    var time;
+
+
+    if(req.body.type == "pcreate"){
+
+        replies.push(req.body.npost);
+
+
+        pg.connect(dbURL, function(err, client, done){
+            if(err){
+                console.log(err);
+                resp.send({status:"fail"});
+            }
+
+
+
+
+            client.query("insert into replies (reply, post_id) values ($1, (select id from posts WHERE title = $2));", [req.body.npost,  req.session.posts['title']]);
+
+
+            var query = client.query("select id, to_char(time_created, 'mm/dd/yyyy HH12:MI:SS') as time_created from replies where post_id = $1 and reply = $2", [req.session.posts['id'], req.body.npost]);
+
+
+            query.on('row', function(row){
+                time = row;
+
+
+            });
+
+
+
+            query.on('end',function () {
+                done();
+                resp.send({
+                    status:"success",
+                    title:req.body.npost,
+                    index:replies.length-1,
+                    description:req.body.npost,
+                    time: time,
+                    username: req.session.user['username']
+
+                });
+            });
+
+        });
+
+
+    } else if(req.body.type == "pread") {
+
+
+
+        pg.connect(dbURL, function(err, client, done){
+            if(err){
+                console.log(err);
+                resp.send({status:"fail"});
+            }
+
+            client.query(" select replies.id, reply, to_char(replies.time_created, 'mm/dd/yyyy HH12:MI:SS') as time_created from posts inner join replies on (posts.id = replies.post_id);", [], function(err, result){
+
+                done();
+                if(err){
+                    console.log(err);
+                    resp.send({status:"fail"});
+                }
+
+                if(result.rows.length > 0){
+                    req.session.data = result.rows;
+                    resp.send({
+                        status:"success",
+                        user:req.session.data,
+                        name:req.session.user['username']
+
+                    });
+
+                } else {
+                    resp.send({status:"fail"});
+                }
+            });
+        });
+
+
+
+        // resp.send({
+        //     status: "success",
+        //     arr: Posts,
+        //     darr: Descriptions,
+        //     username: req.session.user['username']
+        // });
+
+    }
+
+});
+
 
 
 app.post("/room/roomId", function(req,resp){

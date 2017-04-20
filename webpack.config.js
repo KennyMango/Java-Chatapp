@@ -11,7 +11,8 @@ var config = {
     entry: {
         "main":jF+"/main.js",
         "post":jF+"/post.js",
-        "room":jF+"/room.js"
+        "room":jF+"/room.js",
+        "reply":jF+"/reply.js"
     },
     output:{
         filename:"[name]bundle.js",
