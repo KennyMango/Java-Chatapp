@@ -10384,7 +10384,7 @@ $(document).ready(function(){
                     var upvote = document.createElement("a");
                     var votes = document.createElement("span");
                     var downvote = document.createElement("a");
-                    var counter;
+                    var remove = document.createElement("a");
 
 
 
@@ -10403,24 +10403,43 @@ $(document).ready(function(){
                     ndescription.innerHTML = resp.description;
                     chat.className =  "btn btn-blog pull-right marginBottom10";
                     chat.innerHTML = "CHAT";
+                    remove.className=  "btn btn-blog pull-right marginBottom10";
+                    remove.innerHTML = "REMOVE";
                     reply.className = "btn btn-blog pull-right marginBottom10";
                     reply.innerHTML = "REPLY";
                     ndiv.style.borderStyle = "solid";
                     ndiv.style.borderWidth = "medium";
                     ndiv.style.borderColor = "black";
                     ndiv.style.margin = "5px";
+                    ndiv.id = ""+resp.time["id"];
                     ndiv.appendChild(ntitle);
                     ndiv.appendChild(timestamp);
                     ndiv.appendChild(ndescription);
                     ndiv.appendChild(votecontainer);
                     ndiv.appendChild(chat);
                     ndiv.appendChild(reply);
+                    ndiv.appendChild(remove);
 
                     row.appendChild(ndiv);
 
                     chat.myindex = resp.index;
                     chat.addEventListener("click", function(){
                        location.href="/room/"+this.myindex;
+                    });
+
+                    remove.addEventListener("click", function(){
+                        $.ajax({
+                            url:"/removepost",
+                            type:"post",
+                            data:{
+                                id: parseInt(ndiv.id)
+                            },
+                            success:function(resp){
+                                if(resp == "success"){
+                                    location.reload();
+                                }
+                            }
+                        })
                     });
 
                     upvote.addEventListener("click", function () {
@@ -10499,6 +10518,7 @@ $(document).ready(function(){
                     var upvote = document.createElement("a");
                     var votes = document.createElement("span");
                     var downvote = document.createElement("a");
+                    var remove = document.createElement("a");
 
 
                     upvote.className = "glyphicon glyphicon-chevron-up upvote";
@@ -10519,21 +10539,40 @@ $(document).ready(function(){
                     chat.innerHTML = "CHAT";
                     reply.className = "btn btn-blog pull-right marginBottom10";
                     reply.innerHTML = "REPLY";
+                    remove.className=  "btn btn-blog pull-right marginBottom10";
+                    remove.innerHTML = "REMOVE";
                     ndiv.style.borderStyle = "solid";
                     ndiv.style.borderWidth = "medium";
                     ndiv.style.borderColor = "black";
                     ndiv.style.margin = "5px";
+                    ndiv.id = ""+resp.user[i].id;
                     ndiv.appendChild(ntitle);
                     ndiv.appendChild(timestamp);
                     ndiv.appendChild(ndescription);
                     ndiv.appendChild(votecontainer);
                     ndiv.appendChild(chat);
                     ndiv.appendChild(reply);
+                    ndiv.appendChild(remove);
                     row.appendChild(ndiv);
 
                     chat.myindex = i;
                     chat.addEventListener("click", function(){
                         location.href="/room/"+this.myindex;
+                    });
+
+                    remove.addEventListener("click", function(){
+                        $.ajax({
+                            url:"/removepost",
+                            type:"post",
+                            data:{
+                                id: parseInt(ndiv.id)
+                            },
+                            success:function(resp){
+                                if(resp == "success"){
+                                    location.reload();
+                                }
+                            }
+                        })
                     });
 
                     upvote.addEventListener("click", function () {

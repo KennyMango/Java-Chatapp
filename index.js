@@ -139,7 +139,7 @@ app.post("/post", function(req, resp){
             client.query("insert into posts (title, description, user_id) values ($1, $2, (select id from user WHERE username = $3));", [req.body.room, req.body.npost, req.session.user['username']]);
 
 
-            var query = client.query("select to_char(time_created, 'mm/dd/yyyy HH12:MI:SS') as time_created from posts where user_id = $1 and title = $2", [req.session.user['id'], req.body.room]);
+            var query = client.query("select id, to_char(time_created, 'mm/dd/yyyy HH12:MI:SS') as time_created from posts where user_id = $1 and title = $2", [req.session.user['id'], req.body.room]);
 
 
             query.on('row', function(row){
@@ -176,7 +176,7 @@ app.post("/post", function(req, resp){
                 resp.send({status:"fail"});
             }
 
-            client.query(" select title, description, username, to_char(time_created, 'mm/dd/yyyy HH12:MI:SS') as time_created from user inner join posts on (user.id = posts.user_id);", [], function(err, result){
+            client.query(" select posts.id, title, description, username, to_char(time_created, 'mm/dd/yyyy HH12:MI:SS') as time_created from user inner join posts on (user.id = posts.user_id);", [], function(err, result){
 
                 done();
                 if(err){
@@ -241,6 +241,31 @@ app.post("/room/roomId", function(req,resp){
 app.post("/u/logout", function(req, resp){
     req.session.destroy();
     resp.end("success");
+});
+
+
+app.post("/removepost", function(req, resp){
+
+    pg.connect(dbURL, function(err, client, done){
+        if(err){
+            console.log(err);
+            resp.send({status:"fail"});
+        }
+
+        client.query("delete from posts using user where username = $1 and posts.id = $2", [req.session.user['username'], req.body.id], function(err, result){
+
+            done();
+            if(err){
+                console.log(err);
+                resp.send({status:"fail"});
+            }
+
+            resp.send("success");
+
+
+        });
+    });
+
 });
 
 
